@@ -13,13 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     permissions:
-      contents: write   # needed for GitHub Releases
+      contents: write
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Verify animation_block.txt exists
+        run: |
+          if [ ! -f animation_block.txt ]; then
+            echo "ERROR: animation_block.txt missing."
+            exit 1
+          fi
 
       - name: Install build dependencies
         run: |
@@ -58,17 +65,15 @@ jobs:
       - name: Patch device tree for OrangeFox + OTA
         run: |
           BCF="$BUILD_DIR/device/nothing/pacman/BoardConfig.mk"
-
           echo "" >> "$BCF"
-          echo "# ===== OrangeFox Base Flags =====" >> "$BCF"
+          echo "# OrangeFox Base Flags" >> "$BCF"
           echo "FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER := true" >> "$BCF"
           echo "OF_USE_GREEN_LED := true" >> "$BCF"
           echo "OF_STATUS_INDICATOR := 1" >> "$BCF"
           echo "OF_USE_LATEST_MAGISK := true" >> "$BCF"
           echo "OF_INCLUDE_LATEST_MAGISK := true" >> "$BCF"
-
           echo "" >> "$BCF"
-          echo "# ===== OrangeFox OTA Settings =====" >> "$BCF"
+          echo "# OTA Flags" >> "$BCF"
           echo "OF_USE_UPDATE_CHANNEL := 1" >> "$BCF"
           echo "OF_USE_NEW_OTA := 1" >> "$BCF"
           echo "OF_DISABLE_OTA_MENU := 0" >> "$BCF"
@@ -80,14 +85,12 @@ jobs:
         run: |
           CHAN_DIR="$BUILD_DIR/device/nothing/pacman/recovery/root/etc"
           mkdir -p "$CHAN_DIR"
-          cat > "$CHAN_DIR/fox_update_channel" << EOF
-[Channel]
-name=Official OrangeFox pacman
-description=Automated OrangeFox builds for Nothing Phone 2a
-maintainer=xs37
-website=https://github.com/xs37/orangefox-np2a
-json=https://github.com/xs37/orangefox-np2a/releases/latest/download/fox.json
-EOF
+          echo "[Channel]" > "$CHAN_DIR/fox_update_channel"
+          echo "name=Official OrangeFox pacman" >> "$CHAN_DIR/fox_update_channel"
+          echo "description=Automated OrangeFox builds for Nothing Phone 2a" >> "$CHAN_DIR/fox_update_channel"
+          echo "maintainer=xs37" >> "$CHAN_DIR/fox_update_channel"
+          echo "website=https://github.com/xs37/orangefox-np2a" >> "$CHAN_DIR/fox_update_channel"
+          echo "json=https://github.com/xs37/orangefox-np2a/releases/latest/download/fox.json" >> "$CHAN_DIR/fox_update_channel"
 
       - name: Build OrangeFox Recovery + Installer ZIP
         run: |
@@ -95,178 +98,6 @@ EOF
           source build/envsetup.sh || true
           lunch omni_pacman-eng || true
           mka recoveryimage zipimage -j"$(nproc)"
-
-      - name: Create full animation block file
-        run: |
-          cat > animation_block.txt << 'EOF'
-ui_print(" ");
-ui_print("\u001b[38;5;208m");
-
-# ======================================================
-#  ANIMATION LOOP 1  (Frames 1 → 4)
-# ======================================================
-
-# Frame 1
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃");
-
-ui_print(" ");
-
-# Frame 2
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀⠀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⣇⠀⠀⠀⢸⣿⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⣿");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⠀");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄⠀");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄⠀");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃⠀");
-
-ui_print(" ");
-
-# Frame 3
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⣀");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⢀");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄⠀");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄⠀");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃⠀");
-
-ui_print(" ");
-
-# Frame 4
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⠉⠉");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⠉⠁");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃");
-
-ui_print(" ");
-ui_print("\u001b[0m");
-ui_print(" ");
-
-ui_print("Detecting active slot...");
-ui_print("Active slot: " + getprop("ro.boot.slot_suffix"));
-ui_print(" ");
-ui_print("Patching both boot slots...");
-ui_print(" ");
-
-ui_print("\u001b[38;5;208m");
-ui_print(" ");
-
-# ======================================================
-#  ANIMATION LOOP 2  (Frames 1 → 4 AGAIN)
-# ======================================================
-
-# Frame 1 (again)
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃");
-
-ui_print(" ");
-
-# Frame 2 (again)
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀⠀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⣇⠀⠀⠀⢸⣿⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⣿");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⠀");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄⠀");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄⠀");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃⠀");
-
-ui_print(" ");
-
-# Frame 3 (again)
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⣀");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⢀");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄⠀");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄⠀");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃⠀");
-
-ui_print(" ");
-
-# Frame 4 (again)
-ui_print("                  ⢀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀");
-ui_print("              ⣾⠙⠻⢶⣄⡀⠀⠀⠀⢀⣤⠶⠛⠛⡇");
-ui_print("              ⢹⣇⠀⠀⣙⣿⣦⣤⣴⣿⣁⠀⠀⣸⠇");
-ui_print("               ⠙⣡⣾⣿⣿⣿⣿⣿⣿⣿⣷⣌⠋");
-ui_print("              ⣴⣿⣷⣄⡈⢻⣿⡟⢁⣠⣾⣿⣦");
-ui_print("              ⢹⣿⣿⣿⣿⠘⣿⠃⣿⣿⣿⣿⡏");
-ui_print("                ⣀⠀⠈⠛⣰⠿⣆⠛⠁⠀⡀");
-ui_print("              ⢀⣼⣿⣦⠀⠘⠛⠋⠀⣴⣿⠁");
-ui_print("         ⣀⣤⣶⣾⣿⣿⣿⣿⡇⠀⠀⠀⢸⣿⣏");
-ui_print("      ⣠⣶⣿⣿⣿⣿⣿⣿⣿⠿⠿⠀⠀⠀⠾⢿⣿⠉⠉");
-ui_print("   ⣠⣿⣿⣿⣿⣿⣿⡿⠟⠋⣁⣠⣤⣤⡶⠶⠶⣤⣄⠈⠉⠁");
-ui_print("  ⢰⣿⣿⣮⣉⣉⣉⣤⣴⣶⣿⣿⣋⡥⠄⠀⠀⠀⠀⠉⢻⣄");
-ui_print("  ⠸⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣁⣤⣀⣀⣤⣤⣤⣤⣤⣿⡄");
-ui_print("   ⠙⠿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⠁⠀⠀⠀⠀⠈⠛⠃");
-
-ui_print(" ");
-ui_print("\u001b[0m");
-ui_print(" ");
-EOF
 
       - name: Inject animation into updater-script
         run: |
@@ -303,18 +134,16 @@ EOF
           SHA256=$(sha256sum "$OUT/$NEW_ZIP" | awk '{print $1}')
           UNIXTIME=$(date +%s)
 
-          cat > fox.json << EOF
-{
-  "version": "${VERSION}",
-  "device": "pacman",
-  "datetime": ${UNIXTIME},
-  "url": "${URL}",
-  "filename": "${NEW_ZIP}",
-  "filesize": ${SIZE},
-  "sha256": "${SHA256}",
-  "changelog": "Automated OrangeFox build for pacman via GitHub Actions."
-}
-EOF
+          echo "{" > fox.json
+          echo "  \"version\": \"${VERSION}\"," >> fox.json
+          echo "  \"device\": \"pacman\"," >> fox.json
+          echo "  \"datetime\": ${UNIXTIME}," >> fox.json
+          echo "  \"url\": \"${URL}\"," >> fox.json
+          echo "  \"filename\": \"${NEW_ZIP}\"," >> fox.json
+          echo "  \"filesize\": ${SIZE}," >> fox.json
+          echo "  \"sha256\": \"${SHA256}\"," >> fox.json
+          echo "  \"changelog\": \"Automated OrangeFox build for pacman via GitHub Actions.\"" >> fox.json
+          echo "}" >> fox.json
 
           echo "TAG=${TAG}" >> $GITHUB_ENV
 
