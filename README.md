@@ -1,4 +1,19 @@
-### Custom Recovery Tree for the Nothing Phone 2a (pacman)
+### Un-Offical OrangeFox Recov. Proj.
+
+Non-Liability for Use
+
+This project is provided as is, with no promises or guarantees of any kind. Use it at your own risk. The creators, contributors, and maintainers take no responsibility for anything that happens as a result of using, modifying, or distributing this project.
+
+This includes (but isn’t limited to): data loss, device damage, software corruption, security issues, or your cat walking across the keyboard at the wrong time.
+We’re also not liable for anything caused by acts of God, acts of war, acts of governments, aliens, zombie apocalypses, or cosmic rays. Basically — if something goes wrong, that’s on you.
+By using this project, you agree that you do so voluntarily and at your own risk. Now with that out of the way Heres OrangeFox, enjoy. 
+
+
+IF YOU PAID FOR ANY OF THE FILES PROVIDED BY ME, GET YOUR MONEY BACK YOU GOT SCAMMED
+
+
+Custom Recovery Tree for the Nothing Phone 2a (pacman) GitForked from sidharthify
+https://github.com/sidharthify/twrp_device_nothing_pacman
 
 ```
 # SPDX-License-Identifier: Apache-2.0
