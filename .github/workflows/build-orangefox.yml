@@ -1,0 +1,76 @@
+name: Build OrangeFox for Nothing Phone 2a (pacman)
+
+on:
+  workflow_dispatch:
+
+env:
+  BUILD_DIR: ${{ github.workspace }}/build
+  BRANCH: fox_13.0
+  ORANGEFOX_MANIFEST: https://github.com/OrangeFoxRecovery/manifest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout (this repo)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git-core gnupg flex bison build-essential zip curl zlib1g-dev \
+           gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev \
+           libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip python3 \
+           python3-pip repo ccache rsync
+
+      - name: Initialize OrangeFox source
+        run: |
+          mkdir -p $BUILD_DIR
+          cd $BUILD_DIR
+          repo init -u $ORANGEFOX_MANIFEST -b $BRANCH
+          repo sync -c --no-tags --no-clone-bundle -j2
+
+      - name: Clone official Nothing kernel
+        run: |
+          mkdir -p $BUILD_DIR/kernel/nothing
+          git clone https://github.com/NothingOSS/android_kernel_msm-5.10_nothing_sm8475.git \
+            $BUILD_DIR/kernel/nothing/sm8475 --depth=1
+
+      - name: Clone your TWRP device tree
+        run: |
+          mkdir -p $BUILD_DIR/device/nothing
+          git clone https://github.com/sidharthify/twrp_device_nothing_pacman.git \
+            $BUILD_DIR/device/nothing/pacman --depth=1
+
+      - name: Patch device tree for OrangeFox
+        run: |
+          cd $BUILD_DIR/device/nothing/pacman
+          echo "# OrangeFox flags" >> BoardConfig.mk
+          echo "OF_USE_LATEST_MAGISK := true" >> BoardConfig.mk
+          echo "OF_INCLUDE_LATEST_MAGISK := true" >> BoardConfig.mk
+          echo "FOX_USE_SPECIFIC_MAGISK_ZIP := /sdcard/Magisk.zip" >> BoardConfig.mk
+          echo "OF_FLASHLIGHT_ENABLE := true" >> BoardConfig.mk
+          echo "OF_USE_GREEN_LED := true" >> BoardConfig.mk
+          echo "OF_STATUS_INDICATOR := 1" >> BoardConfig.mk
+          echo "OF_USE_MAGISKBOOT_FOR_ALL_PATCHES := true" >> BoardConfig.mk
+          echo "FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER := true" >> BoardConfig.mk
+          echo "FOX_VARIANT := A13" >> BoardConfig.mk
+
+      - name: Build OrangeFox Recovery
+        run: |
+          cd $BUILD_DIR
+          source build/envsetup.sh || true
+          lunch omni_pacman-eng || true
+          mka recoveryimage -j$(nproc)
+
+      - name: Upload recovery image
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrangeFox-Recovery-Pacman
+          path: |
+            $BUILD_DIR/out/target/product/pacman/recovery.img
+            $BUILD_DIR/out/target/product/pacman/*.zip
