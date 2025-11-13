@@ -5,8 +5,8 @@ on:
 
 env:
   BUILD_DIR: ${{ github.workspace }}/ofx-build
-  # Official OrangeFox manifest (small, recovery-focused)
-  OF_MANIFEST: https://gitlab.com/OrangeFox/manifest.git
+  OF_MANIFEST: https://gitlab.com/OrangeFox/mirrors/manifest.git
+  OF_BRANCH: R11.1
 
 jobs:
   build:
@@ -21,14 +21,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify animation_block.txt exists
+      - name: Ensure animation_block.txt exists
         run: |
           if [ ! -f animation_block.txt ]; then
-            echo "ERROR: animation_block.txt is missing in repo root."
+            echo "ERROR: animation_block.txt missing!"
             exit 1
           fi
 
-      - name: Install Android build dependencies (Ubuntu 24)
+      - name: Install build dependencies
         run: |
           sudo dpkg --add-architecture i386
           sudo apt update
@@ -40,19 +40,17 @@ jobs:
             libncurses5-dev:i386 lib32ncurses6
 
       - name: Generate version + timestamp
-        id: versioning
+        id: version
         run: |
           DATE=$(date +"%Y-%m-%d-%H%M")
           echo "DATE=$DATE" >> $GITHUB_OUTPUT
           echo "VERSION=R11.x" >> $GITHUB_OUTPUT
 
-      - name: Init OrangeFox manifest (official, small)
+      - name: Init OrangeFox manifest (mirror, no auth required)
         run: |
           mkdir -p "$BUILD_DIR"
           cd "$BUILD_DIR"
-
-          # Use default branch of OrangeFox manifest (currently R11.x)
-          repo init -u "$OF_MANIFEST"
+          repo init -u "$OF_MANIFEST" -b "$OF_BRANCH"
           repo sync -c --no-tags --no-clone-bundle -j8
 
       - name: Clone Nothing kernel (sm8475)
@@ -62,175 +60,111 @@ jobs:
           git clone https://github.com/NothingOSS/android_kernel_msm-5.10_nothing_sm8475.git \
             kernel/nothing/sm8475 --depth=1
 
-      - name: Clone TWRP device tree (pacman)
+      - name: Clone NP2a TWRP device tree
         run: |
           cd "$BUILD_DIR"
           mkdir -p device/nothing
           git clone https://github.com/sidharthify/twrp_device_nothing_pacman.git \
             device/nothing/pacman --depth=1
 
-      - name: Patch device tree for OrangeFox (feature-max)
+      - name: Patch BoardConfig for OrangeFox
         run: |
           BCF="$BUILD_DIR/device/nothing/pacman/BoardConfig.mk"
 
           echo "" >> "$BCF"
-          echo "# ===== OrangeFox base =====" >> "$BCF"
+          echo "# OrangeFox required flags" >> "$BCF"
           echo "FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER := true" >> "$BCF"
           echo "OF_MAINTAINER := xs37" >> "$BCF"
           echo "OF_TARGET_DEVICE := pacman" >> "$BCF"
 
-          echo "" >> "$BCF"
-          echo "# ===== UI / UX =====" >> "$BCF"
+          echo "# UI" >> "$BCF"
           echo "OF_SCREEN_H := 2400" >> "$BCF"
           echo "OF_STATUS_INDICATOR := 1" >> "$BCF"
           echo "OF_HIDE_NOTCH := 1" >> "$BCF"
-          echo "OF_ALLOW_DISABLE_NAVBAR := 1" >> "$BCF"
-          echo "OF_FLIP_SCREEN_NOTIFICATIONS := 1" >> "$BCF"
 
-          echo "" >> "$BCF"
-          echo "# ===== Magisk / root =====" >> "$BCF"
+          echo "# Magisk" >> "$BCF"
           echo "OF_USE_LATEST_MAGISK := true" >> "$BCF"
           echo "OF_INCLUDE_LATEST_MAGISK := true" >> "$BCF"
-          echo "OF_FORCE_MAGISKBOOT := 1" >> "$BCF"
           echo "OF_USE_MAGISKBOOT_FOR_ALL_PATCHES := 1" >> "$BCF"
 
-          echo "" >> "$BCF"
-          echo "# ===== Encryption / AVB =====" >> "$BCF"
+          echo "# AVB / encryption" >> "$BCF"
           echo "OF_PATCH_AVB20 := 1" >> "$BCF"
-          echo "OF_DONT_PATCH_ENCRYPTED_DEVICE := 1" >> "$BCF"
           echo "OF_NO_TREBLE_COMPATIBILITY_CHECK := 1" >> "$BCF"
           echo "OF_SUPPORT_ALL_BLOCK_OTA_UPDATES := 1" >> "$BCF"
 
-          echo "" >> "$BCF"
-          echo "# ===== OTA (OrangeFox updater) =====" >> "$BCF"
+          echo "# OTA" >> "$BCF"
           echo "OF_USE_UPDATE_CHANNEL := 1" >> "$BCF"
           echo "OF_USE_NEW_OTA := 1" >> "$BCF"
-          echo "OF_DISABLE_OTA_MENU := 0" >> "$BCF"
-          echo "OF_SHOW_UPDATE_APP := 1" >> "$BCF"
-          echo "OF_ALLOW_INSECURE := 1" >> "$BCF"
           echo "OF_UPDATE_URL := https://github.com/${{ github.repository }}/releases/latest/download/fox.json" >> "$BCF"
 
-          echo "" >> "$BCF"
-          echo "# ===== Backup =====" >> "$BCF"
-          echo "OF_QUICK_BACKUP_LIST := /boot;/data;/system;/vendor;" >> "$BCF"
-
-          echo "" >> "$BCF"
-          echo "# ===== Logging =====" >> "$BCF"
-          echo "OF_FORCE_DEBUGGING_ON := 1" >> "$BCF"
-          echo "OF_NO_SAMSUNG_SPECIAL := 1" >> "$BCF"
-
-      - name: Add OrangeFox OTA channel file
+      - name: Add OTA channel file
         run: |
-          CHAN_DIR="$BUILD_DIR/device/nothing/pacman/recovery/root/etc"
-          mkdir -p "$CHAN_DIR"
-          {
-            echo "[Channel]"
-            echo "name=Official OrangeFox pacman"
-            echo "description=Automated OrangeFox builds for Nothing Phone 2a"
-            echo "maintainer=xs37"
-            echo "website=https://github.com/${{ github.repository }}"
-            echo "json=https://github.com/${{ github.repository }}/releases/latest/download/fox.json"
-          } > "$CHAN_DIR/fox_update_channel"
+          CHAN="$BUILD_DIR/device/nothing/pacman/recovery/root/etc"
+          mkdir -p "$CHAN"
+          echo "[Channel]" > "$CHAN/fox_update_channel"
+          echo "name=Official OrangeFox pacman" >> "$CHAN/fox_update_channel"
+          echo "json=https://github.com/${{ github.repository }}/releases/latest/download/fox.json" >> "$CHAN/fox_update_channel"
 
       - name: Build OrangeFox recovery + installer ZIP
         run: |
           cd "$BUILD_DIR"
           source build/envsetup.sh || true
 
-          # Your PRODUCT_NAME is twrp_pacman so use that first
-          if lunch twrp_pacman-eng; then
-            echo "Using lunch target twrp_pacman-eng"
-          elif lunch omni_pacman-eng; then
-            echo "Using lunch target omni_pacman-eng"
-          else
-            echo "ERROR: Could not lunch twrp_pacman-eng or omni_pacman-eng"
-            exit 1
-          fi
+          # Your PRODUCT_NAME is twrp_pacman
+          lunch twrp_pacman-eng
 
-          # Build recovery image
-          mka recoveryimage -j"$(nproc)"
+          # Build IMG
+          mka recoveryimage -j$(nproc)
 
-          # Try common OrangeFox installer zip targets
-          if mka ofox -j"$(nproc)"; then
-            echo "Built installer via ofox"
-          elif mka orangefox -j"$(nproc)"; then
-            echo "Built installer via orangefox"
-          elif mka foxzip -j"$(nproc)"; then
-            echo "Built installer via foxzip"
-          elif mka recoveryzip -j"$(nproc)"; then
-            echo "Built installer via recoveryzip"
-          else
-            echo "ERROR: Failed to build any OrangeFox installer ZIP target."
-            exit 1
-          fi
+          # Try common installer targets
+          mka ofox -j$(nproc) \
+          || mka foxzip -j$(nproc) \
+          || mka orangefox -j$(nproc) \
+          || mka recoveryzip -j$(nproc)
 
-      - name: Inject animation into installer updater-script
+      - name: Inject animation_block.txt
         run: |
           OUT="$BUILD_DIR/out/target/product/pacman"
-          ZIPFILE=$(ls "$OUT"/*.zip | head -n 1 || true)
-
-          if [ -z "$ZIPFILE" ]; then
-            echo "ERROR: No installer ZIP found in $OUT"
-            exit 1
-          fi
+          ZIP=$(ls "$OUT"/*.zip | head -n 1)
 
           mkdir unzip_dir
-          unzip "$ZIPFILE" -d unzip_dir
+          unzip "$ZIP" -d unzip_dir
 
-          SCRIPT_PATH="unzip_dir/META-INF/com/google/android/updater-script"
-          if [ ! -f "$SCRIPT_PATH" ]; then
-            echo "ERROR: updater-script not found in installer ZIP"
-            exit 1
-          fi
-
-          # Append your animation to updater-script
-          cat animation_block.txt >> "$SCRIPT_PATH"
+          cat animation_block.txt >> unzip_dir/META-INF/com/google/android/updater-script
 
           cd unzip_dir
-          zip -r "../$(basename "$ZIPFILE")" .
+          zip -r "../$(basename "$ZIP")" .
           cd ..
 
-      - name: Rename outputs + generate fox.json
+      - name: Generate fox.json + rename files
         run: |
           OUT="$BUILD_DIR/out/target/product/pacman"
-
           IMG="$OUT/recovery.img"
           ZIP=$(ls "$OUT"/*.zip | head -n 1)
 
-          if [ ! -f "$IMG" ]; then
-            echo "ERROR: recovery.img not found!"
-            exit 1
-          fi
-
-          VERSION="${{ steps.versioning.outputs.VERSION }}"
-          DATE="${{ steps.versioning.outputs.DATE }}"
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          DATE="${{ steps.version.outputs.DATE }}"
           TAG="OrangeFox-${VERSION}-pacman-${DATE}"
 
-          NEW_IMG="${TAG}.img"
-          NEW_ZIP="${TAG}.zip"
+          mv "$IMG" "$OUT/$TAG.img"
+          mv "$ZIP" "$OUT/$TAG.zip"
 
-          mv "$IMG" "$OUT/$NEW_IMG"
-          mv "$ZIP" "$OUT/$NEW_ZIP"
+          SHA=$(sha256sum "$OUT/$TAG.zip" | awk '{print $1}')
+          SIZE=$(stat -c%s "$OUT/$TAG.zip")
+          URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/${TAG}.zip"
+          TIME=$(date +%s)
 
-          URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/${NEW_ZIP}"
-          SIZE=$(stat -c%s "$OUT/$NEW_ZIP")
-          SHA256=$(sha256sum "$OUT/$NEW_ZIP" | awk '{print $1}')
-          UNIXTIME=$(date +%s)
+          echo "{" > fox.json
+          echo "  \"version\": \"$VERSION\"," >> fox.json
+          echo "  \"device\": \"pacman\"," >> fox.json
+          echo "  \"datetime\": $TIME," >> fox.json
+          echo "  \"url\": \"$URL\"," >> fox.json
+          echo "  \"filename\": \"$TAG.zip\"," >> fox.json
+          echo "  \"filesize\": $SIZE," >> fox.json
+          echo "  \"sha256\": \"$SHA\"" >> fox.json
+          echo "}" >> fox.json
 
-          {
-            echo "{"
-            echo "  \"version\": \"${VERSION}\","
-            echo "  \"device\": \"pacman\","
-            echo "  \"datetime\": ${UNIXTIME},"
-            echo "  \"url\": \"${URL}\","
-            echo "  \"filename\": \"${NEW_ZIP}\","
-            echo "  \"filesize\": ${SIZE},"
-            echo "  \"sha256\": \"${SHA256}\","
-            echo "  \"changelog\": \"Automated OrangeFox R11.x build for pacman via GitHub Actions.\""
-            echo "}"
-          } > fox.json
-
-          echo "TAG=${TAG}" >> $GITHUB_ENV
+          echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -241,13 +175,10 @@ jobs:
             ${{ env.BUILD_DIR }}/out/target/product/pacman/*.zip
             fox.json
 
-      - name: Create GitHub Release with installer + recovery + fox.json
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: OrangeFox R11.x pacman ${{ steps.versioning.outputs.DATE }}
-          draft: false
-          prerelease: false
           files: |
             ${{ env.BUILD_DIR }}/out/target/product/pacman/*.img
             ${{ env.BUILD_DIR }}/out/target/product/pacman/*.zip
