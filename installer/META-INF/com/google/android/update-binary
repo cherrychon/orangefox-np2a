@@ -1,0 +1,57 @@
+#!/sbin/sh
+# API: $1, OUTFD: $2, ZIPFILE: $3
+OUTFD="$2"
+ZIPFILE="$3"
+
+ui_print() {
+  echo "ui_print $1" > /proc/self/fd/$OUTFD
+  echo "ui_print" > /proc/self/fd/$OUTFD
+}
+
+ui_print " "
+ui_print "===== OrangeFox pacman installer ====="
+ui_print "Maintainer: xs37"
+ui_print " "
+
+# Extract vendor_boot.img from the ZIP to /tmp
+ui_print "Extracting vendor_boot.img..."
+unzip -o "$ZIPFILE" vendor_boot.img -d /tmp >/dev/null 2>&1
+
+if [ ! -f /tmp/vendor_boot.img ]; then
+  ui_print "ERROR: /tmp/vendor_boot.img missing!"
+  exit 1
+fi
+
+# Detect current slot
+SLOT_SUFFIX=$(getprop ro.boot.slot_suffix)
+[ -z "$SLOT_SUFFIX" ] && SLOT_SUFFIX=_a
+
+ui_print "Detected active slot: $SLOT_SUFFIX"
+
+BLOCK_BASE=/dev/block/bootdevice/by-name
+TARGET="${BLOCK_BASE}/vendor_boot${SLOT_SUFFIX}"
+
+if [ -e "$TARGET" ]; then
+  ui_print "Flashing vendor_boot to ${TARGET}..."
+  dd if=/tmp/vendor_boot.img of="$TARGET" bs=4M 2>/tmp/dd_log
+  RES=$?
+else
+  ui_print "WARNING: ${TARGET} not found, flashing both slots..."
+  dd if=/tmp/vendor_boot.img of="${BLOCK_BASE}/vendor_boot_a" bs=4M 2>/tmp/dd_log_a
+  dd if=/tmp/vendor_boot.img of="${BLOCK_BASE}/vendor_boot_b" bs=4M 2>/tmp/dd_log_b
+  # don't hard-fail if one slot path is missing
+  RES=0
+fi
+
+sync
+
+if [ "$RES" -ne 0 ]; then
+  ui_print "ERROR: dd failed, check /tmp/dd_log* for details."
+  exit 1
+fi
+
+ui_print " "
+ui_print "Flash complete!"
+ui_print "You can now reboot back to recovery."
+ui_print " "
+exit 0
