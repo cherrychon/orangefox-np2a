@@ -2,6 +2,8 @@
 
 Maintainer: xs37
 
+Special thanks to: Karn_07, Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524 and anyone else i cant think of in this moment
+
 This software is Licensed under Apache License 2.0
 
 ### Un-Offical OrangeFox Recov. Proj.
