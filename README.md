@@ -2,7 +2,7 @@
 
 Maintainer: xs37
 
-The Apache License 2.0
+This software is Licensed under Apache License 2.0
 
 ### Un-Offical OrangeFox Recov. Proj.
 
