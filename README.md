@@ -5,7 +5,7 @@ WARNING WARNING WARNING
 If you flash the first release of this build your device will ONLY BOOT TO ORANGEFOX this is normal, this first build is a build from nothing not a patched image i built it from nothing so please dont complain about this release if you FLASHED IT, this release was only meant to test boot you can boot it and use it to flash but if you flash it your device will only boot recovery and i cant stress this enough, please wait for next releases to flash i will have it working soon but until then Please enjoy this test image
 
 
-Maintainer: xs37
+Maintainer: xs37(OmnusNight)
 
 Special thanks to: Karn_07, Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524 and anyone else i cant think of in this moment
 
