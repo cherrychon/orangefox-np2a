@@ -68,7 +68,7 @@ mka -j2 vendorbootimage
 
 `out/target/product/pacman/vendor_boot.img`
 
-#Flash (at your own risk):
+#Flash (at your own risk) or Boot(recommended method of use right now):
 
 fastboot flash vendor_boot vendor_boot.img
 # or
@@ -86,3 +86,6 @@ cd installer
 zip -r9 ../OrangeFox-pacman-vendor_boot-installer.zip .
 
 
+
+
+Soon to be added is pacman pro+ device trees and kernel ((keep an eye out for the secret Proj, more info comming soon))
