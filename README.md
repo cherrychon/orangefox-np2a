@@ -29,6 +29,8 @@ ngeFox, enjoy.
 
 IF YOU PAID FOR ANY OF THE FILES PROVIDED BY ME, GET YOUR MONEY BACK YOU GOT SCAMMED
 
+Soon to be added is pacman pro+ ((keep an eye out for the secret Proj, more info comming soon))
+
 ## Source layout
 
 - \`device_nothing_pacman/\` - device tree for pacman with OrangeFox/TWRP 12.1 support
@@ -88,4 +90,4 @@ zip -r9 ../OrangeFox-pacman-vendor_boot-installer.zip .
 
 
 
-Soon to be added is pacman pro+ device trees and kernel ((keep an eye out for the secret Proj, more info comming soon))
+
