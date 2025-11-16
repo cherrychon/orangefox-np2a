@@ -1,4 +1,4 @@
-# Unoffical OrangeFox Recovery for Nothing Phone 2a (pacman)
+# Unoffical OrangeFox Recovery for Nothing Phone 2a (pacman) ((pacman pro is a WIP keep an eye out though should be here soon)) ;)
 
 
 WARNING WARNING WARNING 
