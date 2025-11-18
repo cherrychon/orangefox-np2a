@@ -50,8 +50,7 @@ This includes (but isn't limited to): data loss, device damage, software corrupt
 g across the keyboard at the wrong time.
 We're also not liable for anything caused by acts of God, acts of war, acts of governments, aliens, zombie apocalypses,
 or cosmic rays. Basically - if something goes wrong, that's on you.
-By using this project, you agree that you do so voluntarily and at your own risk. Now with that out of the way Heres Ora
-ngeFox, enjoy.
+By using this project, you agree that you do so voluntarily and at your own risk. Now with that out of the way Heres OrangeFox, enjoy.
 
 
 IF YOU PAID FOR ANY OF THE FILES PROVIDED BY ME, GET YOUR MONEY BACK YOU GOT SCAMMED
