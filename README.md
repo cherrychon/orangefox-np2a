@@ -55,7 +55,7 @@ By using this project, you agree that you do so voluntarily and at your own risk
 
 IF YOU PAID FOR ANY OF THE FILES PROVIDED BY ME, GET YOUR MONEY BACK YOU GOT SCAMMED
 
-pacman pro+ is in extreame testing mode be carful with imgs please
+pacman pro+ is in extreme testing mode be carful with imgs please
 
 ((keep an eye out for the secret Proj, more info comming soon))
 
