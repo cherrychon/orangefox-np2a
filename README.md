@@ -23,7 +23,7 @@ $${\color{orange}  ⣿⣿⣿⣿⣿⣿⣿⣶⣤⣄⣀⣀⣀⣠⣤⣴⣶⣿⣿⣿�
 
 
 WARNING WARNING WARNING 
-If you flash the first release of this build your device will ONLY BOOT TO ORANGEFOX this is normal, this first build is not a patched image i built it from nothing so please dont complain about that release if you FLASHED IT updates will come as needed still working on bugs, this release was only meant to test boot you can boot it and use it to flash but if you flash it your device will only boot recovery and i cant stress this enough, the second build hasnt been tested, and if it has ive had no feedback and without it i cant fix it or work on it more till i know if im building working img for it, please wait for next releases to flash i will have it working soon but until then Please enjoy this test image
+If you flash the first release of my OF build your device will ONLY BOOT TO ORANGEFOX this is normal, the first build is not a patched image i built it from nothing so please dont complain about that release if you FLASHED IT updates will come as needed still working on bugs, that release was only meant to test boot you can boot it and use it to flash but if you flash it your device will only boot recovery and i cant stress this enough, the second build hasnt been tested, and if it has ive had no feedback and without it i cant fix it or work on it more till i know if im building working img for it, please wait for next releases to flash i will have it working soon but until then Please enjoy the test images
 
 
 Maintainer: xs37(OmnusNight)
