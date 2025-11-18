@@ -65,7 +65,7 @@ Soon to be added is pacman pro+ ((keep an eye out for the secret Proj, more info
 
 ## Base sources
 
-- Recovery tree: OrangeFox R11.x (ported on top of TWRP 12.1)
+- Recovery tree: OrangeFox R14.1 (ported on top of TWRP 12.1)
 - Manifest (TWRP 12.1):
   https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git (branch: twrp-12.1)
 
