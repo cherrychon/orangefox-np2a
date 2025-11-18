@@ -80,7 +80,7 @@ repo init -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aos
 repo sync -c --no-tags --no-clone-bundle -j4
 
 # 3) Clone OrangeFox recovery
-git clone https://gitlab.com/OrangeFox/bootable/Recovery.git -b fox_12.1 bootable/recovery
+git clone https://gitlab.com/OrangeFox/bootable/Recovery.git -b fox_14.1 bootable/recovery
 
 # 4) Clone this repo (device + installer)
 git clone https://github.com/YOUR_GITHUB_USERNAME/orangefox-pacman.git ofx-local
