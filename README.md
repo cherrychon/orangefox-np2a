@@ -29,7 +29,10 @@ If you flash the first release of this build your device will ONLY BOOT TO ORANG
 Maintainer: xs37(OmnusNight)
 
 Special thanks to: Karn_07, Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524 and anyone else i cant think of in this moment
-I need pacman Testers without them this proj. cannot proceed on that device I have the pacman pro so i cant test the pacmans img to know if its working they arent the exact same.  *"Whats normal to the spider, is chaos to the fly"*
+
+
+
+I need pacman Testers without them this proj. cannot proceed on that device I have the pacman pro so i cant test the pacmans img to know if its working they arent the exact same.  $${\color{red}*"Whats normal to the spider, is chaos to the fly"*}$$
 
 
 
