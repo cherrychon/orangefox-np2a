@@ -1,19 +1,5 @@
-ON HOLD USE AT OWN RISK
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Unoffical OrangeFox Recovery for Nothing Phone 2a/Nothing Phone 2a+ (Pacman&PacmanPro)
-
+# Unoffical OrangeFox Recovery for Nothing Phone 2a/Nothing Phone 2a+ (Pacman&PacmanPro)#
+##Check out my Other Project for the Nothing Phone 2a/Nothing Phone 2a+ (Pacman&PacmanPro)##
 
 
 $${\color{orange} ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿}$$
@@ -40,14 +26,12 @@ WARNING WARNING WARNING
 If you flash the first release of my OF build your device will ONLY BOOT TO ORANGEFOX this is normal, the first build is not a patched image i built it from nothing so please dont complain about that release if you FLASHED IT updates will come as needed still working on bugs, that release was only meant to test boot you can boot it and use it to flash but if you flash it your device will only boot recovery and i cant stress this enough, the second build hasnt been tested, and if it has ive had no feedback and without it i cant fix it or work on it more till i know if im building working img for it, please wait for next releases to flash i will have it working soon but until then Please enjoy the test images
 
 
-Maintainer: xs37(OmnusNight)
+Maintainer: Xs37(OmnusNight)
 
-Special thanks to: Karn_07, Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524 and anyone else i cant think of in this moment
-
+Special thanks to: 𝕺𝖗𝖙𝖍𝖔𝖉𝖔𝖝𝖚𝖘(Multi-project-tester), Karn_07(Inital tester), Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524, ShadoV, james34602 and LooNaFleX
 
 
 I need pacman Testers without them this proj. cannot proceed on that device I have the pacman pro so i cant test the pacmans img to know if its working they arent the exact same.  $${\color{red} Whats -normal -to -the -spider, -is -chaos -to -the -fly}$$
-
 
 
 This software is Licensed under all original applicable licenses, and used under free and fair use.
@@ -66,12 +50,9 @@ We're also not liable for anything caused by acts of God, acts of war, acts of g
 or cosmic rays. Basically - if something goes wrong, that's on you.
 By using this project, you agree that you do so voluntarily and at your own risk. Now with that out of the way Heres OrangeFox, enjoy.
 
-
 IF YOU PAID FOR ANY OF THE FILES PROVIDED BY ME, GET YOUR MONEY BACK YOU GOT SCAMMED
 
 pacman pro+ is in extreme testing mode be carful with imgs please
-
-((keep an eye out for the secret Proj, more info comming soon))
 
 ## Source layout
 
