@@ -28,7 +28,7 @@ If you flash the first release of my OF build your device will ONLY BOOT TO ORAN
 
 Maintainer: Xs37(OmnusNight)
 
-Special thanks to: 𝕺𝖗𝖙𝖍𝖔𝖉𝖔𝖝𝖚𝖘(Multi-project-tester), Karn_07(Inital tester), Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524, ShadoV, james34602 and LooNaFleX
+Special thanks to: 𝕺𝖗𝖙𝖍𝖔𝖉𝖔𝖝𝖚𝖘(Multi-project-tester), Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524, ShadoV, james34602 and LooNaFleX
 
 
 I need pacman Testers without them this proj. cannot proceed on that device I have the pacman pro so i cant test the pacmans img to know if its working they arent the exact same.  $${\color{red} Whats -normal -to -the -spider, -is -chaos -to -the -fly}$$
