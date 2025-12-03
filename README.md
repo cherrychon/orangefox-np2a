@@ -28,7 +28,7 @@ If you flash the first release of my OF build your device will ONLY BOOT TO ORAN
 
 Maintainer: Xs37(OmnusNight)
 
-In loving memory of and bigest thanks to: oodie84 he sacrificed his pacman pro to this project and i cant repay or thank him enough, I apologize for my part in it.
+In loving memory of and bigest thanks to: oodie84 he sacrificed his pacman pro to this project has since managed to recover i cant thank him enough, I apologize for my part in it.
 
 Special thanks to: 𝕺𝖗𝖙𝖍𝖔𝖉𝖔𝖝𝖚𝖘(Multi-project-tester, translater for Bulgarian) ꒒ꂦꀘꀤ (CRdroid tester), Shirayuki39, R0rt1z2, TheWildJames, Fatalcoder524, ShadoV, james34602 and LooNaFleX
 
